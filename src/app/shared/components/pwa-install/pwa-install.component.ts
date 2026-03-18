@@ -1,0 +1,89 @@
+import { Component, OnInit, signal } from '@angular/core';
+
+@Component({
+  selector: 'app-pwa-install',
+  imports: [],
+  template: `
+    @if (show()) {
+      <!-- Backdrop -->
+      <div class="fixed inset-0 z-40" style="background:rgba(0,0,0,0.3);" (click)="dismiss()"></div>
+
+      <!-- Bottom sheet -->
+      <div class="fixed bottom-0 left-0 right-0 z-50"
+        style="background:#fff; border-radius:16px 16px 0 0; padding:24px; max-width:480px; margin:0 auto;">
+
+        <!-- Handle -->
+        <div class="mx-auto mb-4" style="width:40px; height:4px; background:#E2E8F0; border-radius:2px;"></div>
+
+        <div class="flex items-center gap-4 mb-5">
+          <img src="/img/logo.jpg" style="width:52px; height:52px; border-radius:12px; flex-shrink:0;" />
+          <div>
+            <p class="font-bold text-base" style="color:#0F172A;">Installer Credential App</p>
+            <p class="text-sm" style="color:#64748B;">Accès rapide depuis votre écran d'accueil</p>
+          </div>
+        </div>
+
+        <!-- Avantages -->
+        <div class="space-y-2 mb-6">
+          <div class="flex items-center gap-2 text-sm" style="color:#374151;">
+            <i class="fa-solid fa-bolt" style="color:#2563EB; width:16px;"></i>
+            Accès instantané sans navigateur
+          </div>
+          <div class="flex items-center gap-2 text-sm" style="color:#374151;">
+            <i class="fa-solid fa-lock" style="color:#2563EB; width:16px;"></i>
+            Fonctionne hors ligne
+          </div>
+          <div class="flex items-center gap-2 text-sm" style="color:#374151;">
+            <i class="fa-solid fa-mobile-screen" style="color:#2563EB; width:16px;"></i>
+            Expérience native sur mobile
+          </div>
+        </div>
+
+        <div class="flex gap-3">
+          <button (click)="dismiss()" class="btn-outline flex-1" style="font-size:14px;">
+            Plus tard
+          </button>
+          <button (click)="install()" class="btn-primary flex-1" style="font-size:14px;">
+            <i class="fa-solid fa-download mr-2"></i> Installer
+          </button>
+        </div>
+      </div>
+    }
+  `,
+})
+export class PwaInstallComponent implements OnInit {
+  show = signal(false);
+  private deferredPrompt: any = null;
+
+  ngOnInit() {
+    // Ne pas afficher si déjà installé
+    if (window.matchMedia('(display-mode: standalone)').matches) return;
+
+    // Écouter l'événement beforeinstallprompt
+    window.addEventListener('beforeinstallprompt', (e: Event) => {
+      e.preventDefault();
+      this.deferredPrompt = e;
+
+      // Afficher après 3 secondes
+      setTimeout(() => {
+        if (!localStorage.getItem('pwa-dismissed')) {
+          this.show.set(true);
+        }
+      }, 3000);
+    });
+  }
+
+  install() {
+    if (!this.deferredPrompt) return;
+    this.deferredPrompt.prompt();
+    this.deferredPrompt.userChoice.then(() => {
+      this.deferredPrompt = null;
+      this.show.set(false);
+    });
+  }
+
+  dismiss() {
+    this.show.set(false);
+    localStorage.setItem('pwa-dismissed', '1');
+  }
+}

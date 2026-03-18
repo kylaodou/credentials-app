@@ -1,3 +1,101 @@
-/* You can add global styles to this file, and also import other style files */
-
 @import "tailwindcss";
+
+:root {
+  --primary: #2563EB;
+  --primary-dark: #1D4ED8;
+  --accent: #06B6D4;
+  --border: #E2E8F0;
+  --text: #0F172A;
+  --text-muted: #64748B;
+  --bg: #FFFFFF;
+}
+
+* { box-sizing: border-box; }
+
+body {
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  background: #fff;
+  margin: 0;
+  color: var(--text);
+}
+
+.font-display {
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  font-weight: 800;
+  letter-spacing: -0.03em;
+}
+
+/* Buttons — radius 5px, no shadow */
+.btn-primary {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--primary);
+  color: #fff;
+  font-weight: 600;
+  padding: 0.6rem 1.25rem;
+  border-radius: 5px;
+  border: none;
+  cursor: pointer;
+  font-size: 0.875rem;
+  transition: background 0.15s;
+}
+.btn-primary:hover:not(:disabled) { background: var(--primary-dark); }
+.btn-primary:disabled { opacity: 0.5; cursor: not-allowed; }
+
+.btn-outline {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: #fff;
+  color: var(--primary);
+  font-weight: 600;
+  padding: 0.6rem 1.25rem;
+  border-radius: 5px;
+  border: 1px solid var(--primary);
+  cursor: pointer;
+  font-size: 0.875rem;
+  transition: background 0.15s;
+}
+.btn-outline:hover { background: #EFF6FF; }
+
+/* Cards — fond blanc, bordure légère, pas de shadow */
+.card {
+  background: #fff;
+  border-radius: 8px;
+  border: 1px solid var(--border);
+  padding: 1.25rem;
+}
+
+/* Inputs */
+.input {
+  width: 100%;
+  border: 1px solid var(--border);
+  border-radius: 5px;
+  padding: 0.65rem 0.875rem;
+  font-size: 0.875rem;
+  background: #fff;
+  color: var(--text);
+  outline: none;
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  transition: border-color 0.15s;
+}
+.input:focus { border-color: var(--primary); }
+
+/* Badges */
+.badge-password {
+  background: #EFF6FF;
+  color: #1D4ED8;
+  font-size: 0.7rem;
+  font-weight: 600;
+  padding: 2px 8px;
+  border-radius: 4px;
+}
+.badge-token {
+  background: #ECFEFF;
+  color: #0E7490;
+  font-size: 0.7rem;
+  font-weight: 600;
+  padding: 2px 8px;
+  border-radius: 4px;
+}
