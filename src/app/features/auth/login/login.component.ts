@@ -84,7 +84,7 @@ export class LoginComponent {
   loginWithGoogle() {
     this.loading = true;
     this.error = '';
-    window.location.href = 'http://localhost:8000/api/auth/google/redirect';
+    window.location.href = 'https://credential-app-back.etw-express.com/api/auth/google/redirect';
   }
 }
 
