@@ -114,9 +114,10 @@ const PAGE_SIZE = 10;
                 <p class="text-xs mb-2 line-clamp-2" style="color:#64748B;">{{ cred.description }}</p>
               }
               @if (cred.url) {
-                <p class="text-xs truncate mb-2" style="color:#2563EB;">
+                <a [href]="cred.url" target="_blank" class="text-xs truncate mb-2 block" style="color:#2563EB; text-decoration:none;"
+                  (click)="$event.stopPropagation()">
                   <i class="fa-solid fa-globe mr-1"></i>{{ cred.url }}
-                </p>
+                </a>
               }
 
               <div class="flex items-center justify-between mb-3 pt-2" style="border-top:1px solid #F1F5F9;">
