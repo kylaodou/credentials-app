@@ -49,7 +49,7 @@ export class CallbackComponent implements OnInit {
           // Première connexion → définir mot de passe
           this.router.navigate(['/set-password']);
         } else {
-          // Connexion suivante → toujours demander le mot de passe applicatif
+          // Connexion suivante → toujours demander le mot de passe
           this.router.navigate(['/verify-password']);
         }
       },

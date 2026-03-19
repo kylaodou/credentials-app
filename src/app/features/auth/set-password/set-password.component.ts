@@ -11,7 +11,7 @@ import { passwordMatch, passwordStrength } from '../../../core/validators/passwo
   template: `
     <app-auth-layout
       heading="Sécurisez votre compte"
-      subheading="Définissez un mot de passe applicatif pour protéger vos données sensibles.">
+      subheading="Définissez un mot de passe pour protéger vos données sensibles.">
 
       <h1 class="font-display text-4xl mb-1" style="color:#0F172A;">Définir un mot de passe</h1>
       <p class="text-sm mb-8" style="color:#64748B;">Requis pour accéder à vos credentials sensibles</p>

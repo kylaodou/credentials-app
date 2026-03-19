@@ -10,7 +10,7 @@ import { AuthService } from '../../../core/services/auth.service';
   template: `
     <app-auth-layout
       heading="Vérification d'identité"
-      subheading="Entrez votre mot de passe applicatif pour accéder à vos credentials.">
+      subheading="Entrez votre mot de passe pour accéder à vos credentials.">
 
       <h1 class="font-display text-4xl mb-1" style="color:#0F172A;">Bienvenue</h1>
       <p class="text-sm mb-8" style="color:#64748B;">
@@ -19,7 +19,7 @@ import { AuthService } from '../../../core/services/auth.service';
 
       <div class="mb-4">
         <label class="block text-xs font-semibold mb-1.5" style="color:#374151;">
-          <i class="fa-solid fa-lock mr-1" style="color:#2563EB;"></i> Mot de passe applicatif
+          <i class="fa-solid fa-lock mr-1" style="color:#2563EB;"></i> Mot de passe
         </label>
         <div class="relative">
           <input [type]="showPw() ? 'text' : 'password'" [(ngModel)]="password"

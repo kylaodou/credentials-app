@@ -48,7 +48,7 @@ import { AuthService } from '../../../core/services/auth.service';
       </div>
 
       <div class="text-center">
-        <p class="text-sm mb-3" style="color:#64748B;">Mot de passe applicatif oublié ?</p>
+        <p class="text-sm mb-3" style="color:#64748B;">Mot de passe oublié ?</p>
         <a [routerLink]="['/forgot-password']"
           class="inline-flex items-center gap-2 text-sm font-semibold px-5 py-2.5 rounded-xl transition-all"
           style="color:#2563EB; border:1.5px solid #BFDBFE; background:transparent;"
