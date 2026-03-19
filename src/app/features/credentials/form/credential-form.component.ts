@@ -20,7 +20,6 @@ import { MiniSessionModalComponent } from '../../../shared/components/mini-sessi
         </h1>
       </div>
 
-      <!-- Chargement des données sensibles en mode édition -->
       @if (isEdit && loadingSecrets()) {
         <div class="flex justify-center py-16">
           <i class="fa-solid fa-spinner fa-spin text-2xl" style="color:#2563EB;"></i>
@@ -50,20 +49,34 @@ import { MiniSessionModalComponent } from '../../../shared/components/mini-sessi
             </div>
 
             <div class="space-y-3">
+
+              <!-- Nom -->
               <div>
                 <label class="block text-xs font-semibold mb-1" style="color:#374151;">
                   Nom <span style="color:#DC2626;">*</span>
                 </label>
                 <input type="text" formControlName="name" class="input" placeholder="Ex: GitHub, AWS..." />
+                @if (fe('name')) {
+                  <p class="text-xs mt-1" style="color:#DC2626;">
+                    <i class="fa-solid fa-circle-exclamation mr-1"></i>{{ fe('name') }}
+                  </p>
+                }
               </div>
 
               @if (form.value.type === 'password') {
+                <!-- Username -->
                 <div>
                   <label class="block text-xs font-semibold mb-1" style="color:#374151;">
                     Username <span style="color:#DC2626;">*</span>
                   </label>
                   <input type="text" formControlName="username" class="input" placeholder="Nom d'utilisateur" />
+                  @if (fe('username')) {
+                    <p class="text-xs mt-1" style="color:#DC2626;">
+                      <i class="fa-solid fa-circle-exclamation mr-1"></i>{{ fe('username') }}
+                    </p>
+                  }
                 </div>
+                <!-- Password -->
                 <div>
                   <label class="block text-xs font-semibold mb-1" style="color:#374151;">
                     Password <span style="color:#DC2626;">*</span>
@@ -75,27 +88,53 @@ import { MiniSessionModalComponent } from '../../../shared/components/mini-sessi
                       <i [class]="showPw() ? 'fa-solid fa-eye-slash' : 'fa-solid fa-eye'" style="font-size:13px;"></i>
                     </button>
                   </div>
+                  @if (fe('password')) {
+                    <p class="text-xs mt-1" style="color:#DC2626;">
+                      <i class="fa-solid fa-circle-exclamation mr-1"></i>{{ fe('password') }}
+                    </p>
+                  }
                 </div>
               } @else {
+                <!-- Token -->
                 <div>
                   <label class="block text-xs font-semibold mb-1" style="color:#374151;">
                     Token <span style="color:#DC2626;">*</span>
                   </label>
                   <textarea formControlName="token" class="input resize-none" rows="3" placeholder="Votre token..."></textarea>
+                  @if (fe('token')) {
+                    <p class="text-xs mt-1" style="color:#DC2626;">
+                      <i class="fa-solid fa-circle-exclamation mr-1"></i>{{ fe('token') }}
+                    </p>
+                  }
                 </div>
               }
 
+              <!-- URL -->
               <div>
                 <label class="block text-xs font-semibold mb-1" style="color:#374151;">URL du site</label>
                 <input type="url" formControlName="url" class="input" placeholder="https://..." />
+                @if (fe('url')) {
+                  <p class="text-xs mt-1" style="color:#DC2626;">
+                    <i class="fa-solid fa-circle-exclamation mr-1"></i>{{ fe('url') }}
+                  </p>
+                }
               </div>
+
+              <!-- Description -->
               <div>
                 <label class="block text-xs font-semibold mb-1" style="color:#374151;">Description</label>
                 <textarea formControlName="description" class="input resize-none" rows="2"></textarea>
               </div>
+
+              <!-- Date de validité -->
               <div>
                 <label class="block text-xs font-semibold mb-1" style="color:#374151;">Date de validité</label>
                 <input type="date" formControlName="validity_date" class="input" />
+                @if (fe('validity_date')) {
+                  <p class="text-xs mt-1" style="color:#DC2626;">
+                    <i class="fa-solid fa-circle-exclamation mr-1"></i>{{ fe('validity_date') }}
+                  </p>
+                }
               </div>
             </div>
 
@@ -117,7 +156,6 @@ import { MiniSessionModalComponent } from '../../../shared/components/mini-sessi
       }
     </div>
 
-    <!-- Mini-session modal pour charger les données sensibles en édition -->
     @if (showMiniSession()) {
       <app-mini-session-modal
         (verified)="onSessionVerified()"
@@ -127,71 +165,53 @@ import { MiniSessionModalComponent } from '../../../shared/components/mini-sessi
   `,
 })
 export class CredentialFormComponent implements OnInit {
-  private fb           = inject(FormBuilder);
-  private credService  = inject(CredentialService);
-  private miniSession  = inject(MiniSessionService);
-  router               = inject(Router);
-  private route        = inject(ActivatedRoute);
+  private fb          = inject(FormBuilder);
+  private credService = inject(CredentialService);
+  private miniSession = inject(MiniSessionService);
+  router              = inject(Router);
+  private route       = inject(ActivatedRoute);
 
-  isEdit         = false;
+  isEdit          = false;
   credId: string | null = null;
-  loading        = signal(false);
-  loadingSecrets = signal(false);
-  error          = signal('');
-  showPw         = signal(false);
+  loading         = signal(false);
+  loadingSecrets  = signal(false);
+  error           = signal('');
+  fieldErrors     = signal<Record<string, string>>({});
+  showPw          = signal(false);
   showMiniSession = signal(false);
 
   form = this.fb.group({
-    name:          ['', Validators.required],
-    type:          ['password'],
-    username:      [''],
-    password:      [''],
-    token:         [''],
-    url:           [''],
-    description:   [''],
-    validity_date: [''],
+    name: ['', Validators.required], type: ['password'],
+    username: [''], password: [''], token: [''],
+    url: [''], description: [''], validity_date: [''],
   });
+
+  // Helper pour accéder aux erreurs par champ
+  fe(field: string): string { return this.fieldErrors()[field] ?? ''; }
 
   ngOnInit() {
     const id = this.route.snapshot.paramMap.get('id');
     if (id && this.route.snapshot.url.some((s) => s.path === 'edit')) {
       this.isEdit = true;
       this.credId = id;
-
-      // Charger les infos publiques d'abord
       this.credService.getOne(id).subscribe((c) => {
         this.form.patchValue({
-          name:          c.name,
-          type:          c.type,
-          url:           c.url ?? '',
-          description:   c.description ?? '',
-          validity_date: c.validity_date ?? '',
+          name: c.name, type: c.type,
+          url: c.url ?? '', description: c.description ?? '', validity_date: c.validity_date ?? '',
         });
-
-        // Charger les données sensibles (mini-session ou directe si déjà vérifiée)
-        if (this.miniSession.isValid()) {
-          this.loadSensitiveData();
-        } else {
-          this.showMiniSession.set(true);
-        }
+        if (this.miniSession.isValid()) this.loadSensitiveData();
+        else this.showMiniSession.set(true);
       });
     }
   }
 
-  onSessionVerified() {
-    this.showMiniSession.set(false);
-    this.loadSensitiveData();
-  }
+  onSessionVerified() { this.showMiniSession.set(false); this.loadSensitiveData(); }
 
   private loadSensitiveData() {
     this.loadingSecrets.set(true);
     this.credService.reveal(this.credId!).subscribe({
-      next: (secrets) => {
-        this.form.patchValue({
-          username: secrets.username ?? '',
-          password: secrets.password ?? '',
-          token:    secrets.token    ?? '',
-        });
+      next: (s) => {
+        this.form.patchValue({ username: s.username ?? '', password: s.password ?? '', token: s.token ?? '' });
         this.loadingSecrets.set(false);
       },
       error: () => this.loadingSecrets.set(false),
@@ -207,18 +227,20 @@ export class CredentialFormComponent implements OnInit {
   submit() {
     if (this.form.invalid) return;
     this.loading.set(true);
-    const data = this.form.value;
+    this.fieldErrors.set({});
     const obs = this.isEdit
-      ? this.credService.update(this.credId!, data as any)
-      : this.credService.create(data as any);
+      ? this.credService.update(this.credId!, this.form.value as any)
+      : this.credService.create(this.form.value as any);
 
     obs.subscribe({
       next: (c) => this.router.navigate(['/dashboard/credentials', c.id]),
       error: (err) => {
-        // Afficher les erreurs de validation Laravel (422)
         if (err.status === 422 && err.error?.errors) {
-          const msgs = Object.values(err.error.errors).flat() as string[];
-          this.error.set(msgs[0]);
+          const fe: Record<string, string> = {};
+          for (const [field, msgs] of Object.entries(err.error.errors)) {
+            fe[field] = (msgs as string[])[0];
+          }
+          this.fieldErrors.set(fe);
         } else {
           this.error.set('Erreur lors de l\'enregistrement');
         }
