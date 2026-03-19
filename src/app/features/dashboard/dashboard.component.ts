@@ -12,13 +12,13 @@ import { AuthService } from '../../core/services/auth.service';
       font-size: 0.875rem; font-weight: 500;
       color: #64748B; transition: background 0.15s, color 0.15s;
       text-decoration: none; white-space: nowrap;
-      position: relative; cursor: pointer;
-      border: none; background: none; width: 100%; text-align: left;
+      cursor: pointer; border: none; background: none;
+      width: 100%; text-align: left;
     }
     .nav-link:hover { background: #F1F5F9; color: #0F172A; }
     .nav-link.active { background: #EFF6FF; color: #2563EB; font-weight: 600; }
+    .mobile-nav-link.active-mobile { color: #2563EB !important; }
 
-    /* Tooltip sidebar réduit */
     .tip-wrap { position: relative; }
     .tip-wrap .tip {
       display: none; position: absolute;
@@ -29,7 +29,6 @@ import { AuthService } from '../../core/services/auth.service';
     }
     .tip-wrap:hover .tip { display: block; }
 
-    /* Dropdown profil — reste visible au hover */
     .profile-wrap { position: relative; }
     .profile-btn {
       display: flex; align-items: center; gap: 8px;
@@ -43,8 +42,7 @@ import { AuthService } from '../../core/services/auth.service';
     }
     .profile-wrap:hover .profile-menu { display: block; }
     .profile-menu-inner {
-      background: #fff; border: 1px solid #E2E8F0; border-radius: 6px;
-      overflow: hidden;
+      background: #fff; border: 1px solid #E2E8F0; border-radius: 6px; overflow: hidden;
     }
     .menu-item {
       display: flex; align-items: center; gap: 8px;
@@ -56,36 +54,33 @@ import { AuthService } from '../../core/services/auth.service';
     .menu-item.danger { color: #DC2626; }
     .menu-item.danger:hover { background: #FEF2F2; }
 
-    /* Sidebar toggle button */
     .toggle-btn {
-      position: absolute; right: -12px; top: 50%;
-      transform: translateY(-50%);
+      position: absolute; right: -12px; top: 28px;
       width: 24px; height: 24px; border-radius: 50%;
       background: #fff; border: 1px solid #E2E8F0;
       display: flex; align-items: center; justify-content: center;
-      cursor: pointer; z-index: 20; color: #64748B;
-      transition: background 0.15s;
+      cursor: pointer; z-index: 20; color: #64748B; transition: background 0.15s;
     }
     .toggle-btn:hover { background: #EFF6FF; color: #2563EB; }
   `],
   template: `
     <div class="flex min-h-screen" style="background:#fff;">
 
-      <!-- SIDEBAR -->
-      <aside class="flex flex-col flex-shrink-0 relative"
+      <!-- SIDEBAR — masquée sur mobile -->
+      <aside class="hidden md:flex flex-col flex-shrink-0 relative"
         [style.width]="collapsed() ? '52px' : '210px'"
         style="background:#fff; border-right:1px solid #E2E8F0; transition:width 0.2s ease; overflow:visible; z-index:10;">
 
         <!-- Logo -->
-        <div class="flex items-center px-3 py-3" style="border-bottom:1px solid #E2E8F0; min-height:56px; gap:8px; overflow:hidden;">
+        <div class="flex items-center px-3 py-3" style="border-bottom:1px solid #E2E8F0; min-height:53px; gap:8px; overflow:hidden;">
           <img src="/img/logo.jpg" class="flex-shrink-0" style="width:28px; height:28px; border-radius:5px;" />
           @if (!collapsed()) {
             <span class="font-bold text-sm truncate" style="color:#0F172A;">Credential App</span>
           }
         </div>
 
-        <!-- Toggle button -->
-        <button class="toggle-btn" (click)="collapsed.set(!collapsed())" style="top:28px;">
+        <!-- Toggle -->
+        <button class="toggle-btn" (click)="collapsed.set(!collapsed())">
           <i [class]="collapsed() ? 'fa-solid fa-chevron-right' : 'fa-solid fa-chevron-left'" style="font-size:10px;"></i>
         </button>
 
@@ -94,12 +89,9 @@ import { AuthService } from '../../core/services/auth.service';
           @if (!collapsed()) {
             <p class="text-xs font-semibold px-2 mb-2 uppercase tracking-wider" style="color:#CBD5E1;">Menu</p>
           }
-
           <div class="tip-wrap">
-            <a routerLink="/dashboard/credentials"
-              routerLinkActive="active"
-              [routerLinkActiveOptions]="{exact:false}"
-              class="nav-link">
+            <a routerLink="/dashboard/credentials" routerLinkActive="active"
+              [routerLinkActiveOptions]="{exact:false}" class="nav-link">
               <i class="fa-solid fa-key flex-shrink-0" style="width:16px; text-align:center; font-size:13px;"></i>
               @if (!collapsed()) { <span>Mes Credentials</span> }
             </a>
@@ -107,7 +99,7 @@ import { AuthService } from '../../core/services/auth.service';
           </div>
         </nav>
 
-        <!-- User bas -->
+        <!-- User -->
         <div class="px-2 py-3" style="border-top:1px solid #E2E8F0; overflow:visible;">
           @if (!collapsed() && auth.user()) {
             <div class="flex items-center gap-2 px-2 py-2 mb-1" style="background:#F8FAFF; border-radius:5px;">
@@ -118,7 +110,6 @@ import { AuthService } from '../../core/services/auth.service';
               <p class="text-xs font-medium truncate" style="color:#0F172A;">{{ auth.user()!.name }}</p>
             </div>
           }
-
           <div class="tip-wrap">
             <button (click)="auth.logout()" class="nav-link"
               onmouseover="this.style.background='#FEF2F2'; this.style.color='#DC2626'"
@@ -135,15 +126,18 @@ import { AuthService } from '../../core/services/auth.service';
       <div class="flex-1 flex flex-col min-w-0">
 
         <!-- Header -->
-        <header class="flex items-center justify-between px-6"
-          style="background:#fff; border-bottom:1px solid #E2E8F0; min-height:56px;">
+        <header class="flex items-center justify-between px-4 md:px-6"
+          style="background:#fff; border-bottom:1px solid #E2E8F0; min-height:53px;">
 
-          <!-- Bonjour -->
-          <div>
-            <p class="font-bold text-base" style="color:#0F172A;">
-              Bonjour{{ auth.user() ? ', ' + auth.user()!.name.split(' ')[0] : '' }} 👋
-            </p>
-            <p class="text-xs" style="color:#94A3B8;">Gérez vos credentials en toute sécurité</p>
+          <!-- Logo mobile + Bonjour -->
+          <div class="flex items-center gap-3">
+            <img src="/img/logo.jpg" class="md:hidden flex-shrink-0" style="width:28px; height:28px; border-radius:5px;" />
+            <div>
+              <p class="font-bold text-sm md:text-base" style="color:#0F172A;">
+                Bonjour{{ auth.user() ? ', ' + auth.user()!.name.split(' ')[0] : '' }} 👋
+              </p>
+              <p class="text-xs hidden sm:block" style="color:#94A3B8;">Gérez vos credentials en toute sécurité</p>
+            </div>
           </div>
 
           <!-- Profil dropdown -->
@@ -160,8 +154,6 @@ import { AuthService } from '../../core/services/auth.service';
                 </div>
                 <i class="fa-solid fa-chevron-down" style="font-size:10px; color:#94A3B8;"></i>
               </div>
-
-              <!-- Menu — padding-top pour éviter le gap -->
               <div class="profile-menu">
                 <div class="profile-menu-inner">
                   <div class="px-3 py-2" style="border-bottom:1px solid #F1F5F9;">
@@ -181,9 +173,33 @@ import { AuthService } from '../../core/services/auth.service';
         </header>
 
         <!-- Content -->
-        <main class="flex-1 p-6 overflow-y-auto" style="background:#F8FAFF;">
+        <main class="flex-1 overflow-y-auto p-4 md:p-6 pb-20 md:pb-6" style="background:#F8FAFF;">
           <router-outlet />
         </main>
+
+        <!-- Nav mobile bottom -->
+        <nav class="md:hidden fixed bottom-0 left-0 right-0 z-30 flex"
+          style="background:#fff; border-top:1px solid #E2E8F0;">
+          <a routerLink="/dashboard/credentials" routerLinkActive="active-mobile"
+            [routerLinkActiveOptions]="{exact:false}"
+            class="flex-1 flex flex-col items-center py-3 text-xs font-medium mobile-nav-link"
+            style="color:#64748B; text-decoration:none;">
+            <i class="fa-solid fa-key mb-1" style="font-size:16px;"></i>
+            Credentials
+          </a>
+          <a routerLink="/dashboard/profile" routerLinkActive="active-mobile"
+            class="flex-1 flex flex-col items-center py-3 text-xs font-medium mobile-nav-link"
+            style="color:#64748B; text-decoration:none;">
+            <i class="fa-solid fa-user mb-1" style="font-size:16px;"></i>
+            Profil
+          </a>
+          <button (click)="auth.logout()"
+            class="flex-1 flex flex-col items-center py-3 text-xs font-medium"
+            style="color:#64748B; background:none; border:none; cursor:pointer;">
+            <i class="fa-solid fa-right-from-bracket mb-1" style="font-size:16px;"></i>
+            Quitter
+          </button>
+        </nav>
       </div>
     </div>
   `,
@@ -191,6 +207,5 @@ import { AuthService } from '../../core/services/auth.service';
 export class DashboardComponent implements OnInit {
   auth = inject(AuthService);
   collapsed = signal(false);
-  today = new Date().toLocaleDateString('fr-FR', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' });
   ngOnInit() { if (!this.auth.user()) this.auth.loadMe().subscribe(); }
 }
