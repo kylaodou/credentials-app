@@ -289,7 +289,15 @@ export class CredentialListComponent implements OnInit {
         this.saving.set(false);
         this.router.navigate(['/dashboard/credentials', c.id]);
       },
-      error: () => { this.modalError.set('Erreur lors de la création'); this.saving.set(false); },
+      error: (err) => {
+        if (err.status === 422 && err.error?.errors) {
+          const msgs = Object.values(err.error.errors).flat() as string[];
+          this.modalError.set(msgs[0]);
+        } else {
+          this.modalError.set('Erreur lors de la création');
+        }
+        this.saving.set(false);
+      },
     });
   }
 }

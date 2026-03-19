@@ -214,7 +214,16 @@ export class CredentialFormComponent implements OnInit {
 
     obs.subscribe({
       next: (c) => this.router.navigate(['/dashboard/credentials', c.id]),
-      error: () => { this.error.set('Erreur lors de l\'enregistrement'); this.loading.set(false); },
+      error: (err) => {
+        // Afficher les erreurs de validation Laravel (422)
+        if (err.status === 422 && err.error?.errors) {
+          const msgs = Object.values(err.error.errors).flat() as string[];
+          this.error.set(msgs[0]);
+        } else {
+          this.error.set('Erreur lors de l\'enregistrement');
+        }
+        this.loading.set(false);
+      },
     });
   }
 }

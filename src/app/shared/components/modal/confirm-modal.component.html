@@ -1,0 +1,28 @@
+<div class="fixed inset-0 z-50 flex items-center justify-center p-4"
+      style="background:rgba(0,0,0,0.4);"
+      (click)="cancel.emit()">
+      <div style="background:#fff; border-radius:8px; width:100%; max-width:380px; padding:24px;"
+        (click)="$event.stopPropagation()">
+
+        <div class="flex items-center gap-3 mb-4">
+          <div class="flex items-center justify-center rounded-full flex-shrink-0"
+            style="width:36px; height:36px;"
+            [style.background]="danger ? '#FEF2F2' : '#EFF6FF'">
+            <i [class]="danger ? 'fa-solid fa-trash' : 'fa-solid fa-circle-question'"
+              [style.color]="danger ? '#DC2626' : '#2563EB'" style="font-size:14px;"></i>
+          </div>
+          <div>
+            <p class="font-bold text-sm" style="color:#0F172A;">{{ title }}</p>
+            <p class="text-xs" style="color:#64748B;">{{ message }}</p>
+          </div>
+        </div>
+
+        <div class="flex gap-2">
+          <button (click)="cancel.emit()" class="btn-outline flex-1" style="font-size:13px;">Annuler</button>
+          <button (click)="confirm.emit()" class="btn-primary flex-1" style="font-size:13px;"
+            [style.background]="danger ? '#DC2626' : '#2563EB'">
+            {{ confirmLabel }}
+          </button>
+        </div>
+      </div>
+    </div>

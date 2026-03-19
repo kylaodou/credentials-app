@@ -3,7 +3,7 @@ import { Component, Input } from '@angular/core';
 @Component({
   selector: 'app-auth-layout',
   imports: [],
-  styleUrl: './auth-layout.component.scss',
+  styleUrl: './auth-layout.component.css',
   templateUrl: './auth-layout.component.html',
 })
 export class AuthLayoutComponent {
