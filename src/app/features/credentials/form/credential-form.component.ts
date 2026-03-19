@@ -145,7 +145,7 @@ import { MiniSessionModalComponent } from '../../../shared/components/mini-sessi
             }
 
             <div class="flex gap-2 mt-5">
-              <a routerLink="/dashboard/credentials" class="btn-outline flex-1 text-center" style="text-decoration:none;">Annuler</a>
+              <button type="button" (click)="goBack()" class="btn-outline flex-1 text-center">Annuler</button>
               <button type="submit" [disabled]="form.invalid || loading()" class="btn-primary flex-1 disabled:opacity-50">
                 @if (loading()) { <i class="fa-solid fa-spinner fa-spin mr-1.5"></i> }
                 {{ isEdit ? 'Modifier' : 'Créer' }}
@@ -159,7 +159,7 @@ import { MiniSessionModalComponent } from '../../../shared/components/mini-sessi
     @if (showMiniSession()) {
       <app-mini-session-modal
         (verified)="onSessionVerified()"
-        (cancel)="router.navigate(['/dashboard/credentials'])">
+        (cancel)="goBack()">
       </app-mini-session-modal>
     }
   `,
@@ -174,7 +174,7 @@ export class CredentialFormComponent implements OnInit {
   isEdit          = false;
   credId: string | null = null;
   loading         = signal(false);
-  loadingSecrets  = signal(false);
+  loadingSecrets  = signal(false); // sera mis à true dès ngOnInit si isEdit
   error           = signal('');
   fieldErrors     = signal<Record<string, string>>({});
   showPw          = signal(false);
@@ -189,11 +189,19 @@ export class CredentialFormComponent implements OnInit {
   // Helper pour accéder aux erreurs par champ
   fe(field: string): string { return this.fieldErrors()[field] ?? ''; }
 
+  // Retour intelligent : détails si édition, liste sinon
+  goBack() {
+    if (this.isEdit && this.credId) this.router.navigate(['/dashboard/credentials', this.credId]);
+    else this.router.navigate(['/dashboard/credentials']);
+  }
+
   ngOnInit() {
     const id = this.route.snapshot.paramMap.get('id');
     if (id && this.route.snapshot.url.some((s) => s.path === 'edit')) {
       this.isEdit = true;
       this.credId = id;
+      // Démarrer en loading immédiatement pour ne pas afficher le formulaire vide
+      this.loadingSecrets.set(true);
       this.credService.getOne(id).subscribe((c) => {
         this.form.patchValue({
           name: c.name, type: c.type,

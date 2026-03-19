@@ -53,10 +53,10 @@ const PAGE_SIZE = 10;
       <div class="mb-4">
         <div class="relative mb-3">
           <i class="fa-solid fa-magnifying-glass absolute left-3 top-1/2 -translate-y-1/2" style="color:#94A3B8; font-size:13px;"></i>
-          <input type="text" [(ngModel)]="search" (ngModelChange)="onSearch()"
+          <input type="text" [ngModel]="search()" (ngModelChange)="search.set($event); onSearch()"
             class="input pl-9" placeholder="Rechercher par nom, description, URL..." />
-          @if (search) {
-            <button (click)="search = ''; onSearch()"
+          @if (search()) {
+            <button (click)="search.set(''); onSearch()"
               class="absolute right-3 top-1/2 -translate-y-1/2"
               style="background:none; border:none; color:#94A3B8; cursor:pointer; font-size:13px;">
               <i class="fa-solid fa-xmark"></i>
@@ -82,9 +82,9 @@ const PAGE_SIZE = 10;
         <div style="background:#fff; border:1px solid #E2E8F0; border-radius:8px; padding:40px;" class="text-center">
           <i class="fa-solid fa-lock text-4xl mb-3 block" style="color:#CBD5E1;"></i>
           <p class="font-semibold mb-1" style="color:#374151;">
-            {{ search ? 'Aucun résultat' : 'Aucun credential' }}
+            {{ search() ? 'Aucun résultat' : 'Aucun credential' }}
           </p>
-          @if (!search) {
+          @if (!search()) {
             <p class="text-sm mb-4" style="color:#94A3B8;">Commencez par en ajouter un</p>
             <button (click)="openModal()" class="btn-primary" style="font-size:13px;">
               <i class="fa-solid fa-plus mr-1.5"></i> Ajouter
@@ -322,10 +322,10 @@ export class CredentialListComponent implements OnInit {
   showPw      = signal(false);
   currentType = signal<'password' | 'token'>('password');
   page        = signal(1);
-  search      = '';
+  search      = signal('');
 
   filtered = computed(() => {
-    const q = this.search.toLowerCase().trim();
+    const q = this.search().toLowerCase().trim();
     if (!q) return this.credentials();
     return this.credentials().filter(c =>
       c.name.toLowerCase().includes(q) ||

@@ -79,8 +79,11 @@ body {
   outline: none;
   font-family: 'Plus Jakarta Sans', sans-serif;
   transition: border-color 0.15s;
+  box-sizing: border-box;
 }
 .input:focus { border-color: var(--primary); }
+/* Padding gauche pour les inputs avec icône */
+.input.pl-9 { padding-left: 2.5rem !important; }
 
 /* Badges */
 .badge-password {
