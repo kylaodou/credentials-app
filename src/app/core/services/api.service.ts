@@ -1,11 +1,12 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable, inject } from '@angular/core';
 import { Observable } from 'rxjs';
+import { environment } from '../../../environments/environment';
 
 @Injectable({ providedIn: 'root' })
 export class ApiService {
   private http = inject(HttpClient);
-  private base = 'https://credential-app-back.etw-express.com/api';
+  private base = environment.apiUrl;
 
   get<T>(path: string): Observable<T> {
     return this.http.get<T>(`${this.base}/${path}`);

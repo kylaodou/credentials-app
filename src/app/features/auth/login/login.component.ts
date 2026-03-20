@@ -2,6 +2,7 @@ import { Component, inject } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { AuthLayoutComponent } from '../../../shared/components/auth-layout/auth-layout.component';
 import { AuthService } from '../../../core/services/auth.service';
+import { environment } from '../../../../environments/environment';
 
 @Component({
   selector: 'app-login',
@@ -99,7 +100,7 @@ export class LoginComponent {
   loginWithGoogle() {
     this.loading = true;
     this.error = '';
-    window.location.href = 'https://credential-app-back.etw-express.com/api/auth/google/redirect';
+    window.location.href = environment.googleRedirectUrl;
   }
 }
 
