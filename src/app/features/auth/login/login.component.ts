@@ -82,11 +82,17 @@ export class LoginComponent {
   error = '';
 
   constructor() {
-    // Remettre loading à false si l'utilisateur revient en arrière (bouton back)
-    window.addEventListener('pageshow', (e) => {
-      if (e.persisted || performance.getEntriesByType('navigation').some((n: any) => n.type === 'back_forward')) {
+    // Remettre loading à false quand la page redevient visible (retour arrière)
+    document.addEventListener('visibilitychange', () => {
+      if (document.visibilityState === 'visible') {
         this.loading = false;
       }
+    });
+    window.addEventListener('pageshow', () => {
+      this.loading = false;
+    });
+    window.addEventListener('focus', () => {
+      this.loading = false;
     });
   }
 
