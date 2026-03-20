@@ -51,43 +51,46 @@ const PAGE_SIZE = 10;
 
       <!-- Barre de recherche + filtres + séparateur -->
       <div class="mb-4">
-        <!-- Recherche -->
-        <div class="relative mb-2">
-          <i class="fa-solid fa-magnifying-glass absolute left-3 top-1/2 -translate-y-1/2" style="color:#94A3B8; font-size:13px;"></i>
-          <input type="text" [ngModel]="search()" (ngModelChange)="search.set($event); onSearch()"
-            class="input pl-9" placeholder="Rechercher..." />
-          @if (search()) {
-            <button (click)="search.set(''); onSearch()"
-              class="absolute right-3 top-1/2 -translate-y-1/2"
-              style="background:none; border:none; color:#94A3B8; cursor:pointer; font-size:13px;">
-              <i class="fa-solid fa-xmark"></i>
-            </button>
-          }
-        </div>
+        <!-- Mobile: recherche puis filtres en dessous | Desktop: côte à côte -->
+        <div class="flex flex-col sm:flex-row gap-2 mb-3">
+          <!-- Recherche -->
+          <div class="relative flex-1">
+            <i class="fa-solid fa-magnifying-glass absolute left-3 top-1/2 -translate-y-1/2" style="color:#94A3B8; font-size:13px;"></i>
+            <input type="text" [ngModel]="search()" (ngModelChange)="search.set($event); onSearch()"
+              class="input pl-9" placeholder="Rechercher..." />
+            @if (search()) {
+              <button (click)="search.set(''); onSearch()"
+                class="absolute right-3 top-1/2 -translate-y-1/2"
+                style="background:none; border:none; color:#94A3B8; cursor:pointer; font-size:13px;">
+                <i class="fa-solid fa-xmark"></i>
+              </button>
+            }
+          </div>
 
-        <!-- Filtres type — pleine largeur sur mobile -->
-        <div class="flex gap-1 mb-3">
-          <button (click)="setFilter('all')"
-            class="flex-1 py-1.5 text-xs font-semibold rounded cursor-pointer transition-all"
-            [style.background]="filter() === 'all' ? '#2563EB' : '#fff'"
-            [style.color]="filter() === 'all' ? '#fff' : '#64748B'"
-            [style.border]="filter() === 'all' ? '1px solid #2563EB' : '1px solid #E2E8F0'">
-            Tous
-          </button>
-          <button (click)="setFilter('password')"
-            class="flex-1 py-1.5 text-xs font-semibold rounded cursor-pointer transition-all"
-            [style.background]="filter() === 'password' ? '#2563EB' : '#fff'"
-            [style.color]="filter() === 'password' ? '#fff' : '#64748B'"
-            [style.border]="filter() === 'password' ? '1px solid #2563EB' : '1px solid #E2E8F0'">
-            <i class="fa-solid fa-key mr-1"></i> Password
-          </button>
-          <button (click)="setFilter('token')"
-            class="flex-1 py-1.5 text-xs font-semibold rounded cursor-pointer transition-all"
-            [style.background]="filter() === 'token' ? '#06B6D4' : '#fff'"
-            [style.color]="filter() === 'token' ? '#fff' : '#64748B'"
-            [style.border]="filter() === 'token' ? '1px solid #06B6D4' : '1px solid #E2E8F0'">
-            <i class="fa-solid fa-ticket mr-1"></i> Token
-          </button>
+          <!-- Filtres type -->
+          <div class="flex gap-1">
+            <button (click)="setFilter('all')"
+              class="flex-1 sm:flex-none px-3 py-1.5 text-xs font-semibold rounded cursor-pointer transition-all"
+              [style.background]="filter() === 'all' ? '#2563EB' : '#fff'"
+              [style.color]="filter() === 'all' ? '#fff' : '#64748B'"
+              [style.border]="filter() === 'all' ? '1px solid #2563EB' : '1px solid #E2E8F0'">
+              Tous
+            </button>
+            <button (click)="setFilter('password')"
+              class="flex-1 sm:flex-none px-3 py-1.5 text-xs font-semibold rounded cursor-pointer transition-all"
+              [style.background]="filter() === 'password' ? '#2563EB' : '#fff'"
+              [style.color]="filter() === 'password' ? '#fff' : '#64748B'"
+              [style.border]="filter() === 'password' ? '1px solid #2563EB' : '1px solid #E2E8F0'">
+              <i class="fa-solid fa-key mr-1"></i> Password
+            </button>
+            <button (click)="setFilter('token')"
+              class="flex-1 sm:flex-none px-3 py-1.5 text-xs font-semibold rounded cursor-pointer transition-all"
+              [style.background]="filter() === 'token' ? '#06B6D4' : '#fff'"
+              [style.color]="filter() === 'token' ? '#fff' : '#64748B'"
+              [style.border]="filter() === 'token' ? '1px solid #06B6D4' : '1px solid #E2E8F0'">
+              <i class="fa-solid fa-ticket mr-1"></i> Token
+            </button>
+          </div>
         </div>
 
         <div class="flex items-center justify-between pb-3" style="border-bottom:1px solid #E2E8F0;">

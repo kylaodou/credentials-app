@@ -81,6 +81,15 @@ export class LoginComponent {
   loading = false;
   error = '';
 
+  constructor() {
+    // Remettre loading à false si l'utilisateur revient en arrière (bouton back)
+    window.addEventListener('pageshow', (e) => {
+      if (e.persisted || performance.getEntriesByType('navigation').some((n: any) => n.type === 'back_forward')) {
+        this.loading = false;
+      }
+    });
+  }
+
   loginWithGoogle() {
     this.loading = true;
     this.error = '';
