@@ -1,59 +1,70 @@
-# CredentialsApp
+# Credential App — Interface web
 
-This project was generated using [Angular CLI](https://github.com/angular/angular-cli) version 21.1.4.
+Application web (PWA) d'un coffre-fort personnel d'identifiants : on y enregistre ses comptes,
+mots de passe, jetons et liens, et on ne les affiche en clair qu'après confirmation de son mot de
+passe.
 
-## Development server
+Elle consomme l'API [`credentials-app-back`](https://github.com/kylaodou/credentials-app-back).
 
-To start a local development server, run:
+## Fonctionnalités
 
-```bash
-ng serve
-```
+- Connexion avec Google, puis définition d'un mot de passe propre à l'application.
+- Mot de passe oublié avec code OTP reçu par e-mail.
+- Tableau de bord des identifiants.
+- Liste, création, modification, détail et suppression des identifiants (avec confirmation).
+- Affichage en clair d'un secret uniquement après vérification du mot de passe.
+- Session courte : une fenêtre de reconnexion apparaît quand la session expire.
+- Profil utilisateur, page de politique de confidentialité.
+- Installable comme une application (PWA), notifications sous forme de toasts.
 
-Once the server is running, open your browser and navigate to `http://localhost:4200/`. The application will automatically reload whenever you modify any of the source files.
+## Stack technique
 
-## Code scaffolding
+- Angular 21 (composants standalone)
+- Tailwind CSS 4
+- Service Worker Angular
 
-Angular CLI includes powerful code scaffolding tools. To generate a new component, run:
+## Prérequis
 
-```bash
-ng generate component component-name
-```
+- Node.js 20+ et npm
+- Angular CLI 21 : `npm install -g @angular/cli`
+- L'API `credentials-app-back` lancée
 
-For a complete list of available schematics (such as `components`, `directives`, or `pipes`), run:
-
-```bash
-ng generate --help
-```
-
-## Building
-
-To build the project run:
-
-```bash
-ng build
-```
-
-This will compile your project and store the build artifacts in the `dist/` directory. By default, the production build optimizes your application for performance and speed.
-
-## Running unit tests
-
-To execute unit tests with the [Vitest](https://vitest.dev/) test runner, use the following command:
+## Installation et lancement
 
 ```bash
-ng test
+git clone https://github.com/kylaodou/credentials-app.git
+cd credentials-app
+npm install
+npm start
 ```
 
-## Running end-to-end tests
+L'application est disponible sur http://localhost:4200.
 
-For end-to-end (e2e) testing, run:
+## Configuration
+
+```ts
+// src/environments/environment.ts
+export const environment = {
+  production: false,
+  apiUrl: 'http://localhost:8000/api',
+  googleRedirectUrl: 'http://localhost:8000/api/auth/google/redirect',
+};
+```
+
+`environment.prod.ts` contient les URLs de l'API en production.
+
+## Build de production
 
 ```bash
-ng e2e
+npm run build
 ```
 
-Angular CLI does not come with an end-to-end testing framework by default. You can choose one that suits your needs.
+## Tests
 
-## Additional Resources
+```bash
+npm test
+```
 
-For more information on using the Angular CLI, including detailed command references, visit the [Angular CLI Overview and Command Reference](https://angular.dev/tools/cli) page.
+## Auteur
+
+[@kylaodou](https://github.com/kylaodou)
