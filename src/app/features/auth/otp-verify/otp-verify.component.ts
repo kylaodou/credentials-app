@@ -9,7 +9,7 @@ import { AuthService } from '../../../core/services/auth.service';
   template: `
     <app-auth-layout
       heading="Vérification en deux étapes"
-      subheading="Saisissez le code à 4 chiffres envoyé à votre adresse email.">
+      subheading="Saisissez le code à 6 chiffres envoyé à votre adresse email.">
 
       <h1 class="font-display text-4xl mb-1" style="color:#0F172A;">Code OTP</h1>
       <p class="text-sm mb-2" style="color:#64748B;">
@@ -28,15 +28,15 @@ import { AuthService } from '../../../core/services/auth.service';
         }
       </div>
 
-      <!-- 4 inputs OTP -->
-      <div class="flex gap-3 justify-center mb-5">
-        @for (i of [0,1,2,3]; track i) {
+      <!-- 6 inputs OTP -->
+      <div class="flex gap-2 justify-center mb-5">
+        @for (i of [0,1,2,3,4,5]; track i) {
           <input type="text" inputmode="numeric" maxlength="1"
             [id]="'otp-' + i"
             (input)="onInput($event, i)"
             (keydown)="onKeydown($event, i)"
             class="text-center text-2xl font-bold bg-white transition"
-            style="width:56px; height:56px; border:1px solid #E2E8F0; border-radius:5px; outline:none; font-family:inherit;"
+            style="width:48px; height:52px; border:1px solid #E2E8F0; border-radius:5px; outline:none; font-family:inherit;"
             onfocus="this.style.borderColor='#2563EB'"
             onblur="this.style.borderColor='#E2E8F0'" />
         }
@@ -49,7 +49,7 @@ import { AuthService } from '../../../core/services/auth.service';
         </div>
       }
 
-      <button (click)="verify()" [disabled]="code.length < 4 || loading || timeLeft === 0"
+      <button (click)="verify()" [disabled]="code.length < 6 || loading || timeLeft === 0"
         class="btn-primary w-full disabled:opacity-50">
         @if (loading) { <i class="fa-solid fa-spinner fa-spin mr-2"></i> }
         <i class="fa-solid fa-check mr-2"></i> Vérifier le code
@@ -102,9 +102,9 @@ export class OtpVerifyComponent implements OnInit, OnDestroy {
   onInput(event: Event, index: number) {
     const input = event.target as HTMLInputElement;
     input.value = input.value.replace(/\D/g, '').slice(0, 1);
-    this.code = Array.from({ length: 4 }, (_, i) =>
+    this.code = Array.from({ length: 6 }, (_, i) =>
       (document.getElementById(`otp-${i}`) as HTMLInputElement)?.value ?? '').join('');
-    if (input.value && index < 3)
+    if (input.value && index < 5)
       (document.getElementById(`otp-${index + 1}`) as HTMLInputElement)?.focus();
   }
 
@@ -117,7 +117,11 @@ export class OtpVerifyComponent implements OnInit, OnDestroy {
     if (this.timeLeft === 0) { this.error = 'Le code a expiré. Veuillez en demander un nouveau.'; return; }
     this.loading = true; this.error = '';
     this.auth.verifyOtp(this.email, this.code).subscribe({
-      next: () => this.router.navigate(['/reset-password'], { queryParams: { email: this.email } }),
+      next: (res) => this.router.navigate(['/reset-password'], {
+        queryParams: { email: this.email },
+        // Le jeton de réinitialisation reste en mémoire (état de navigation), jamais dans l'URL.
+        state: { resetToken: res.reset_token },
+      }),
       error: () => { this.error = 'Code invalide ou expiré'; this.loading = false; },
     });
   }

@@ -249,7 +249,19 @@ export class CredentialDetailComponent implements OnInit, OnDestroy {
   }
 
   private executeAction(action: PendingAction) {
-    if (action === 'reveal') this.credService.reveal(this.credential()!.id).subscribe(s => this.secrets.set(s));
+    if (action === 'reveal') {
+      this.credService.reveal(this.credential()!.id).subscribe({
+        next: (s) => this.secrets.set(s),
+        error: (err) => {
+          // 423 : le serveur exige une nouvelle confirmation du mot de passe.
+          if (err?.status === 423) {
+            this.miniSession.clear();
+            this.pendingAction = 'reveal';
+            this.showMiniSession.set(true);
+          }
+        },
+      });
+    }
     if (action === 'edit')   this.router.navigate(['/dashboard/credentials', this.credential()!.id, 'edit']);
     if (action === 'delete') this.showDeleteConfirm.set(true);
   }

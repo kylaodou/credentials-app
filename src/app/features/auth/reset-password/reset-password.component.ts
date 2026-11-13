@@ -105,6 +105,7 @@ export class ResetPasswordComponent implements OnInit {
   showPw      = signal(false);
   showConfirm = signal(false);
   email   = '';
+  resetToken = '';
   loading = false;
   error   = '';
 
@@ -113,7 +114,14 @@ export class ResetPasswordComponent implements OnInit {
     password_confirmation: ['', Validators.required],
   }, { validators: passwordMatch });
 
-  ngOnInit() { this.email = this.route.snapshot.queryParamMap.get('email') ?? ''; }
+  ngOnInit() {
+    this.email = this.route.snapshot.queryParamMap.get('email') ?? '';
+    this.resetToken = (history.state?.resetToken as string) ?? '';
+    if (!this.resetToken) {
+      // Sans jeton (page rechargée ou ouverte directement), il faut refaire la vérification du code.
+      this.router.navigate(['/forgot-password']);
+    }
+  }
 
   get pw()       { return this.form.get('password')?.value ?? ''; }
   get confirm()  { return this.form.get('password_confirmation')?.value ?? ''; }
@@ -123,7 +131,7 @@ export class ResetPasswordComponent implements OnInit {
     if (this.form.invalid) return;
     this.loading = true;
     const { password, password_confirmation } = this.form.value;
-    this.auth.resetPassword(this.email, password!, password_confirmation!).subscribe({
+    this.auth.resetPassword(this.email, this.resetToken, password!, password_confirmation!).subscribe({
       next: () => this.router.navigate(['/login']),
       error: () => { this.error = 'Erreur lors de la réinitialisation'; this.loading = false; },
     });

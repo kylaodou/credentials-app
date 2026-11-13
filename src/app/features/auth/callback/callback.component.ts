@@ -32,10 +32,13 @@ export class CallbackComponent implements OnInit {
   error = '';
 
   ngOnInit() {
-    const params      = this.route.snapshot.queryParamMap;
+    // Le serveur transmet le jeton dans le fragment (#token=...) : il n'est jamais envoyé
+    // à un serveur. On l'efface aussitôt de la barre d'adresse et de l'historique.
+    const params      = new URLSearchParams(this.route.snapshot.fragment ?? '');
     const token       = params.get('token');
     const needsPassword = params.get('needs_password') === 'true';
-    const errorParam  = params.get('error');
+    const errorParam  = this.route.snapshot.queryParamMap.get('error');
+    history.replaceState(null, '', location.pathname);
 
     if (errorParam) { this.error = 'La connexion Google a échoué. Veuillez réessayer.'; return; }
     if (!token)     { this.error = 'Token manquant. Veuillez réessayer.'; return; }

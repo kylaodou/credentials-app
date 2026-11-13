@@ -28,11 +28,11 @@ export class AuthService {
   }
 
   verifyOtp(email: string, code: string) {
-    return this.api.post('auth/forgot-password/verify-otp', { email, code });
+    return this.api.post<{ message: string; reset_token: string }>('auth/forgot-password/verify-otp', { email, code });
   }
 
-  resetPassword(email: string, password: string, password_confirmation: string) {
-    return this.api.post('auth/forgot-password/reset', { email, password, password_confirmation });
+  resetPassword(email: string, reset_token: string, password: string, password_confirmation: string) {
+    return this.api.post('auth/forgot-password/reset', { email, reset_token, password, password_confirmation });
   }
 
   loadMe() {

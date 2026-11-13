@@ -222,7 +222,14 @@ export class CredentialFormComponent implements OnInit {
         this.form.patchValue({ username: s.username ?? '', password: s.password ?? '', token: s.token ?? '' });
         this.loadingSecrets.set(false);
       },
-      error: () => this.loadingSecrets.set(false),
+      error: (err) => {
+        this.loadingSecrets.set(false);
+        // 423 : le serveur exige une nouvelle confirmation du mot de passe.
+        if (err?.status === 423) {
+          this.miniSession.clear();
+          this.showMiniSession.set(true);
+        }
+      },
     });
   }
 
