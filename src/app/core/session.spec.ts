@@ -54,6 +54,14 @@ describe('Sessions', () => {
     expect(guard(authGuard)).toBe(true);
   });
 
+  it("reste compatible avec un serveur qui ne renvoie pas de nouveau jeton", () => {
+    auth.setPendingToken('1|complet');
+    auth.verifyAppPassword('Secret#123').subscribe();
+    TestBed.inject(HttpTestingController).expectOne(`${environment.apiUrl}/auth/verify-password`).flush({ verified: true, expires_in: 300 });
+    expect(auth.token()).toBe('1|complet');
+    expect(auth.locked()).toBe(false);
+  });
+
   it('ferme la session locale quand le serveur répond 401', () => {
     auth.setPendingToken('1|x');
     TestBed.inject(HttpClient).get(`${environment.apiUrl}/me`).subscribe({ error: () => {} });

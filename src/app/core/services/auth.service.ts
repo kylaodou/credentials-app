@@ -88,8 +88,10 @@ export class AuthService {
   }
 
   private unlocked(r: UnlockResponse) {
-    if (r.token) this.storeToken(r.token, false);
-    this.miniSession.grant(r.expires_in);
+    // Nouveau jeton de session si le serveur en renvoie un ; sinon le jeton actuel était déjà complet.
+    const token = r.token ?? this.token();
+    if (token) this.storeToken(token, false);
+    this.miniSession.grant(r.expires_in ?? 300);
   }
 
   private storeToken(token: string, locked: boolean) {
