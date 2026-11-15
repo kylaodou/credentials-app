@@ -1,5 +1,5 @@
 import { Routes } from '@angular/router';
-import { authGuard } from './core/guards/auth.guard';
+import { authGuard, sessionGuard } from './core/guards/auth.guard';
 
 export const routes: Routes = [
   { path: '', redirectTo: 'login', pathMatch: 'full' },
@@ -18,7 +18,7 @@ export const routes: Routes = [
   {
     path: 'set-password',
     loadComponent: () => import('./features/auth/set-password/set-password.component').then((m) => m.SetPasswordComponent),
-    canActivate: [authGuard],
+    canActivate: [sessionGuard],
   },
   {
     path: 'forgot-password',
@@ -35,7 +35,7 @@ export const routes: Routes = [
   {
     path: 'verify-password',
     loadComponent: () => import('./features/auth/verify-password/verify-password.component').then((m) => m.VerifyPasswordComponent),
-    canActivate: [authGuard],
+    canActivate: [sessionGuard],
   },
   {
     path: 'dashboard',
@@ -58,6 +58,10 @@ export const routes: Routes = [
       {
         path: 'profile',
         loadComponent: () => import('./features/profile/profile.component').then((m) => m.ProfileComponent),
+      },
+      {
+        path: 'extension',
+        loadComponent: () => import('./features/extension/extension.component').then((m) => m.ExtensionComponent),
       },
     ],
   },

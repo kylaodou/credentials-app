@@ -18,15 +18,16 @@ export class MiniSessionService {
     return true;
   }
 
-  grant() {
-    this.expiresAt = Date.now() + SESSION_DURATION;
+  grant(seconds = SESSION_DURATION / 1000) {
+    const duration = seconds * 1000;
+    this.expiresAt = Date.now() + duration;
     this.verified.set(true);
-    this.secondsLeft.set(300);
+    this.secondsLeft.set(seconds);
 
     clearTimeout(this.expireTimer);
     clearInterval(this.countdownTimer);
 
-    this.expireTimer = setTimeout(() => this.expire(), SESSION_DURATION);
+    this.expireTimer = setTimeout(() => this.expire(), duration);
 
     this.countdownTimer = setInterval(() => {
       const remaining = Math.max(0, Math.round((this.expiresAt! - Date.now()) / 1000));

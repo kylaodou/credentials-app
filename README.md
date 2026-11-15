@@ -14,6 +14,10 @@ Elle consomme l'API [`credentials-app-back`](https://github.com/kylaodou/credent
 - Liste, création, modification, détail et suppression des identifiants (avec confirmation).
 - Affichage en clair d'un secret uniquement après vérification du mot de passe.
 - Session courte : une fenêtre de reconnexion apparaît quand la session expire.
+- Déconnexion automatique après 30 minutes sans activité (avertissement 2 minutes avant), synchronisée entre les onglets.
+- Accès aux identifiants seulement après la saisie du mot de passe applicatif, même juste après Google.
+- Page **Extension** : code de connexion à usage unique pour l'[extension de navigateur](https://github.com/kylaodou/credentials-app-extension).
+- Secrets copiés effacés du presse-papiers après 30 secondes.
 - Profil utilisateur, page de politique de confidentialité.
 - Installable comme une application (PWA), notifications sous forme de toasts.
 

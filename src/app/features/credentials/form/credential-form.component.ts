@@ -179,6 +179,8 @@ export class CredentialFormComponent implements OnInit {
   fieldErrors     = signal<Record<string, string>>({});
   showPw          = signal(false);
   showMiniSession = signal(false);
+  /** Vrai une fois les secrets actuels chargés : sinon ils ne sont jamais renvoyés au serveur. */
+  private secretsLoaded = false;
 
   form = this.fb.group({
     name: ['', Validators.required], type: ['password'],
@@ -202,14 +204,14 @@ export class CredentialFormComponent implements OnInit {
       this.credId = id;
       // Démarrer en loading immédiatement pour ne pas afficher le formulaire vide
       this.loadingSecrets.set(true);
-      this.credService.getOne(id).subscribe((c) => {
+      this.credService.getOne(id).subscribe({ error: () => this.router.navigate(['/dashboard/credentials']), next: (c) => {
         this.form.patchValue({
           name: c.name, type: c.type,
           url: c.url ?? '', description: c.description ?? '', validity_date: c.validity_date ?? '',
         });
         if (this.miniSession.isValid()) this.loadSensitiveData();
         else this.showMiniSession.set(true);
-      });
+      } });
     }
   }
 
@@ -220,6 +222,7 @@ export class CredentialFormComponent implements OnInit {
     this.credService.reveal(this.credId!).subscribe({
       next: (s) => {
         this.form.patchValue({ username: s.username ?? '', password: s.password ?? '', token: s.token ?? '' });
+        this.secretsLoaded = true;
         this.loadingSecrets.set(false);
       },
       error: (err) => {
@@ -243,8 +246,13 @@ export class CredentialFormComponent implements OnInit {
     if (this.form.invalid) return;
     this.loading.set(true);
     this.fieldErrors.set({});
+    const payload: Record<string, unknown> = { ...this.form.value };
+    if (this.isEdit && !this.secretsLoaded) {
+      // Secrets non déverrouillés : on ne les envoie pas, le serveur garde les valeurs actuelles.
+      delete payload['username']; delete payload['password']; delete payload['token'];
+    }
     const obs = this.isEdit
-      ? this.credService.update(this.credId!, this.form.value as any)
+      ? this.credService.update(this.credId!, payload as any)
       : this.credService.create(this.form.value as any);
 
     obs.subscribe({

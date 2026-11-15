@@ -97,6 +97,13 @@ import { AuthService } from '../../core/services/auth.service';
             </a>
             @if (collapsed()) { <span class="tip">Mes Credentials</span> }
           </div>
+          <div class="tip-wrap">
+            <a routerLink="/dashboard/extension" routerLinkActive="active" class="nav-link">
+              <i class="fa-solid fa-puzzle-piece flex-shrink-0" style="width:16px; text-align:center; font-size:13px;"></i>
+              @if (!collapsed()) { <span>Extension</span> }
+            </a>
+            @if (collapsed()) { <span class="tip">Extension</span> }
+          </div>
         </nav>
 
         <!-- User -->
@@ -192,6 +199,12 @@ import { AuthService } from '../../core/services/auth.service';
             style="color:#64748B; text-decoration:none;">
             <i class="fa-solid fa-user mb-1" style="font-size:16px;"></i>
             Profil
+          </a>
+          <a routerLink="/dashboard/extension" routerLinkActive="active-mobile"
+            class="flex-1 flex flex-col items-center py-3 text-xs font-medium mobile-nav-link"
+            style="color:#64748B; text-decoration:none;">
+            <i class="fa-solid fa-puzzle-piece mb-1" style="font-size:16px;"></i>
+            Extension
           </a>
           <button (click)="auth.logout()"
             class="flex-1 flex flex-col items-center py-3 text-xs font-medium"
