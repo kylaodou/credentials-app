@@ -43,8 +43,7 @@ export class CallbackComponent implements OnInit {
     if (errorParam) { this.error = 'La connexion Google a échoué. Veuillez réessayer.'; return; }
     if (!token)     { this.error = 'Token manquant. Veuillez réessayer.'; return; }
 
-    this.auth.token.set(token);
-    localStorage.setItem('token', token);
+    this.auth.setPendingToken(token);
 
     this.api.get<User>('me').pipe(tap((u) => this.auth.user.set(u))).subscribe({
       next: () => {

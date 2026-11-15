@@ -276,6 +276,10 @@ export class CredentialDetailComponent implements OnInit, OnDestroy {
 
   copy(key: string, value: string) {
     navigator.clipboard.writeText(value);
+    // Le secret ne reste pas dans le presse-papiers : effacé après 30 secondes s'il n'a pas changé.
+    setTimeout(() => {
+      navigator.clipboard.readText().then((t) => { if (t === value) navigator.clipboard.writeText(''); }).catch(() => {});
+    }, 30000);
     this.copied = key;
     this.toast.success(`${key.charAt(0).toUpperCase() + key.slice(1)} copié !`);
     setTimeout(() => this.copied = '', 2000);
